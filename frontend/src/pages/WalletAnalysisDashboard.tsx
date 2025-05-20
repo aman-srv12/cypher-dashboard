@@ -31,13 +31,13 @@ export default function WalletAnalysisDashboard() {
 
     setLoading(true);
     setError(null);
+    setCounterparties([]);                        // clear old data
 
     try {
       const response = await axios.get("https://cypher-backend-dz17.onrender.com/wallet-analysis", {
         params: { address: targetAddress },
-        timeout: 100000,
+        timeout: 100_000,
       });
-
       setCounterparties(response.data);
       setCurrentPage(1);
     } catch (err) {
@@ -49,36 +49,40 @@ export default function WalletAnalysisDashboard() {
     }
   };
 
+  // sync URL param → input + fetch
   useEffect(() => {
     if (address) {
+      setWalletAddress(address);
       analyzeWallet(address);
     }
   }, [address]);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
+  /* pagination helpers */
+  const indexOfLastItem  = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = counterparties.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(counterparties.length / itemsPerPage);
+  const currentItems     = counterparties.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages       = Math.ceil(counterparties.length / itemsPerPage);
 
   return (
     <div className={`min-h-screen p-4 ${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-50'}`}>
       <div className={`max-w-7xl mx-auto my-4 rounded-lg shadow-md p-6 overflow-auto min-h-[85vh] ${
         theme === 'dark' ? 'bg-gray-800' : 'bg-white'
       }`}>
+
         <h1 className={`text-2xl font-bold text-center mb-4 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-700'}`}>
           🔍 Wallet Analysis Dashboard
         </h1>
 
+        {/* address input + button */}
         <div className="flex flex-col sm:flex-row gap-3 mb-5">
           <input
-            type="text"
             value={walletAddress}
-            onChange={(e) => setWalletAddress(e.target.value)}
+            onChange={e => setWalletAddress(e.target.value)}
             placeholder="Enter wallet address (0x...)"
             className={`flex-1 border rounded-md py-2 px-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-              theme === 'dark' 
-                ? 'bg-gray-700 border-gray-600 text-white' 
-                : 'bg-white border-gray-300 text-gray-700'
+              theme === 'dark'
+                ? 'bg-gray-700 border-gray-600 text-white'
+                : 'bg-white  border-gray-300 text-gray-700'
             }`}
           />
           <button
@@ -86,21 +90,31 @@ export default function WalletAnalysisDashboard() {
             disabled={loading || !walletAddress}
             className="px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Analyzing...' : 'Analyze'}
+            {loading ? 'Analyzing…' : 'Analyze'}
           </button>
         </div>
 
+        {/* error banner */}
         {error && (
           <div className={`mb-3 p-3 rounded-lg ${
-            theme === 'dark' 
-              ? 'bg-red-900/50 border-red-700 text-red-200' 
+            theme === 'dark'
+              ? 'bg-red-900/50 border-red-700 text-red-200'
               : 'bg-red-100 border-red-200 text-red-600'
           }`}>
             {error}
           </div>
         )}
 
-        {counterparties.length > 0 && (
+        {/* spinner while loading */}
+        {loading && (
+          <div className="flex justify-center items-center py-10">
+            <div className="h-6 w-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="ml-3 text-sm text-gray-500">Loading wallet data…</span>
+          </div>
+        )}
+
+        {/* table + pagination once loaded */}
+        {!loading && counterparties.length > 0 && (
           <div className={`rounded-md shadow-sm p-4 overflow-x-auto ${
             theme === 'dark' ? 'bg-gray-700' : 'bg-white'
           }`}>
@@ -108,14 +122,14 @@ export default function WalletAnalysisDashboard() {
               <CounterpartyTable items={currentItems} />
             </div>
 
-            {/* Compact pagination controls */}
+            {/* pagination controls */}
             <div className="flex justify-between items-center flex-wrap gap-2 mt-2 text-sm">
               <div className="flex items-center gap-1">
-                <label htmlFor="rowsPerPage" className="text-sm">Rows per page:</label>
+                <label htmlFor="rowsPerPage">Rows per page:</label>
                 <select
                   id="rowsPerPage"
                   value={itemsPerPage}
-                  onChange={(e) => {
+                  onChange={e => {
                     setItemsPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
@@ -135,9 +149,7 @@ export default function WalletAnalysisDashboard() {
                 >
                   Prev
                 </button>
-                <span className="text-sm">
-                  Page {currentPage} of {totalPages}
-                </span>
+                <span>Page {currentPage} of {totalPages}</span>
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
