@@ -6,14 +6,23 @@ from services.wallet_analysis import analyze_wallet
 # Initialize FastAPI app
 app = FastAPI()
 
-# Allow local frontend (React/Next.js)
+# Allow requests from your deployed frontend
+origins = [
+    "https://cypher-dashboard-5jvl.vercel.app",
+    "http://localhost:3000"  # Optional: helpful for local testing
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # adjust if deployed to Vercel etc.
+    allow_origins=origins,            # or use ["*"] for all origins (less secure)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+def read_root():
+    return {"status": "backend up"}
 
 # --- USD Load Volume Aggregation ---
 @app.get("/load-volume")
