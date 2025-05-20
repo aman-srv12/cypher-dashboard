@@ -4,6 +4,18 @@ import WalletAnalysisDashboard from "./pages/WalletAnalysisDashboard";
 import { ThemeProvider } from "./context/themeContext";
 import "./index.css"; // Tailwind and global CSS
 
+// Default Wallet Address
+const DEFAULT_WALLET = "0xdab58cb37cd9cc7fdcedae28e8d6c2f7b14e35fd";
+
+// Default Volume Range
+const DEFAULT_FROM = "2025-01-01";
+const getYesterday = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  return date.toISOString().split("T")[0];
+};
+const DEFAULT_TO = getYesterday();
+
 function App() {
   return (
     <ThemeProvider>
@@ -14,13 +26,13 @@ function App() {
               <div className="flex justify-between h-16">
                 <div className="flex space-x-8">
                   <Link
-                    to="/volume"
+                    to={`/volume?from=${DEFAULT_FROM}&to=${DEFAULT_TO}`}
                     className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                   >
                     USD Volume Dashboard
                   </Link>
                   <Link
-                    to="/wallet-analysis"
+                    to={`/wallet-analysis/${DEFAULT_WALLET}`}
                     className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                   >
                     Wallet Analysis
@@ -38,7 +50,7 @@ function App() {
                 path="/"
                 element={
                   <Navigate
-                    to="/wallet-analysis/0xdab58cb37cd9cc7fdcedae28e8d6c2f7b14e35fd"
+                    to={`/volume?from=2025-01-01&to=2025-05-19`}
                     replace
                   />
                 }
