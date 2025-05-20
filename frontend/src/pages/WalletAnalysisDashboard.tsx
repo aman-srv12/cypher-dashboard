@@ -30,7 +30,7 @@ export default function WalletAnalysisDashboard() {
     setError(null);
 
     try {
-      const response = await axios.get(`https://cypher-backend-dz17.onrender.com/wallet-analysis`, {
+      const response = await axios.get("https://cypher-backend-dz17.onrender.com/wallet-analysis", {
         params: { address: targetAddress },
         timeout: 100000,
       });
