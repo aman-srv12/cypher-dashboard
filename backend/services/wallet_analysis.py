@@ -1,7 +1,7 @@
 from web3 import Web3
 import os
-from utils.basescan import fetch_eth, fetch_erc20
-from utils.labels import KNOWN_LABELS
+from backend.utils.basescan import fetch_eth, fetch_erc20
+from backend.utils.labels import KNOWN_LABELS
 
 WEB3_PROVIDER = os.getenv("BASE_RPC", "https://mainnet.base.org")
 w3 = Web3(Web3.HTTPProvider(WEB3_PROVIDER))

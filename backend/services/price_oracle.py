@@ -4,7 +4,7 @@ import os
 import time
 import requests
 from web3.exceptions import ContractLogicError
-from utils.constants import AERODROME_FACTORY, USDC, ETH_TOKEN
+from backend.utils.constants import AERODROME_FACTORY, USDC, ETH_TOKEN
 
 # Connect to Base chain
 WEB3_PROVIDER = os.getenv("BASE_RPC", "https://mainnet.base.org")

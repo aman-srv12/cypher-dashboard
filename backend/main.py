@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from services.volume_aggregator import get_usd_volume
-from services.wallet_analysis import analyze_wallet
+from backend.services.volume_aggregator import get_usd_volume
+from backend.services.wallet_analysis import analyze_wallet
 
 # Initialize FastAPI app
 app = FastAPI()

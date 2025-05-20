@@ -1,8 +1,8 @@
 from datetime import datetime
 from web3 import Web3
-from services.price_oracle import get_usd_price
-from utils.constants import MASTER_WALLET, ETH_TOKEN
-from utils.basescan import fetch_basescan
+from backend.services.price_oracle import get_usd_price
+from backend.utils.constants import MASTER_WALLET, ETH_TOKEN
+from backend.utils.basescan import fetch_basescan
 
 # Main function to compute load volume (daily/weekly/monthly)
 def get_usd_volume(from_date: str = None, to_date: str = None):
