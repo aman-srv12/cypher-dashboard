@@ -17,12 +17,12 @@ export default function VolumeDashboard() {
   const fetchChartData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8000/load-volume", {
+      const response = await axios.get("https://cypher-backend-dz17.onrender.com/load-volume", {
         params: {
           from_date: fromDate,
           to_date: toDate,
         },
-        timeout: 10000,
+        timeout: 100000,
       });
 
       setDailyData(response.data.daily || []);
